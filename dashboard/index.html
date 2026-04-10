@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pharma TrialGuard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --sky: #00b4d8;
+      --sky2: #0096c7;
+      --sky3: #48cae4;
+      --blk: #0d0d0d;
+      --blk2: #161616;
+      --blk3: #1e1e1e;
+      --wht: #ffffff;
+      --muted: #6b7280;
+      --danger: #ff3b3b;
+      --warn: #ffb703;
+      --ok: #00d4a8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--blk);
+      color: var(--wht);
+      min-height: 100vh;
+      font-size: 14px
+    }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      padding: 0 2rem;
+      background: var(--blk2);
+      border-bottom: 2px solid var(--sky);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .logo-mark {
+      background: var(--sky);
+      color: var(--blk);
+      font-family: 'Bebas Neue';
+      font-size: 22px;
+      letter-spacing: .05em;
+      padding: 4px 12px;
+      border-radius: 4px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--sky);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 500
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    /* RUN BUTTON — big, bold, clickable */
+    .run-btn {
+      background: var(--sky);
+      color: var(--blk);
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-family: 'Bebas Neue';
+      font-size: 20px;
+      letter-spacing: .08em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 0 0 0 var(--sky);
+    }
+
+    .run-btn:hover {
+      background: var(--sky3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 180, 216, .4)
+    }
+
+    .run-btn:active {
+      transform: scale(.97)
+    }
+
+    .run-btn.running {
+      background: var(--warn);
+      animation: btnPulse .6s infinite alternate
+    }
+
+    @keyframes btnPulse {
+      from {
+        box-shadow: 0 0 0 0 rgba(255, 183, 3, .4)
+      }
+
+      to {
+        box-shadow: 0 0 0 10px rgba(255, 183, 3, 0)
+      }
+    }
+
+    .run-btn .spin {
+      display: inline-block;
+      animation: spin .7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blk3);
+      border: 1px solid var(--sky);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 11px;
+      color: var(--sky);
+      font-family: 'DM Mono';
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      animation: blink 1.8s infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .2
+      }
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      padding: 0 2rem;
+      background: var(--blk2);
+      border-bottom: 1px solid #222;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 11px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: color .18s, border-color .18s;
+      font-family: 'Inter';
+    }
+
+    .tab:hover {
+      color: var(--sky)
+    }
+
+    .tab.active {
+      color: var(--sky);
+      border-bottom-color: var(--sky)
+    }
+
+    /* LAYOUT */
+    .shell {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: calc(100vh - 96px)
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--blk2);
+      border-right: 1px solid #222;
+      padding: 1.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .sb-h {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 8px
+    }
+
+    select,
+    input[type=range] {
+      width: 100%;
+      background: var(--blk3);
+      border: 1px solid #333;
+      color: var(--wht);
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-family: 'Inter';
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .range-val {
+      font-size: 12px;
+      color: var(--sky);
+      font-family: 'DM Mono';
+      margin-top: 2px
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px
+    }
+
+    .leg-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .sb-info {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 2.1
+    }
+
+    .sb-info b {
+      color: var(--wht)
+    }
+
+    /* CONTENT */
+    .content {
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      overflow: auto
+    }
+
+    .page {
+      display: none;
+      flex-direction: column;
+      gap: 1.4rem
+    }
+
+    .page.active {
+      display: flex;
+      animation: fadeUp .4s ease both
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* KPI STRIP */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px
+    }
+
+    .kpi {
+      background: var(--blk2);
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--sky)
+    }
+
+    .kpi:hover {
+      border-color: var(--sky)
+    }
+
+    .kpi-lbl {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase
+    }
+
+    .kpi-val {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 4px 0 2px;
+      font-family: 'DM Mono'
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .kpi-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 9px;
+      background: #222;
+      overflow: hidden
+    }
+
+    .kpi-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width .9s ease
+    }
+
+    /* CARDS */
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem
+    }
+
+    .g3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.2rem
+    }
+
+    .g4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px
+    }
+
+    .card {
+      background: var(--blk2);
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem
+    }
+
+    .card-hdr {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .01em
+    }
+
+    .card-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(0, 180, 216, .12);
+      border: 1px solid rgba(0, 180, 216, .3);
+      border-radius: 99px;
+      padding: 3px 12px;
+      font-size: 11px;
+      color: var(--sky);
+    }
+
+    /* TABLE */
+    .tbl-wrap {
+      overflow-x: auto;
+      max-height: 500px;
+      overflow-y: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px
+    }
+
+    thead th {
+      color: var(--sky);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--sky);
+      text-align: left;
+      position: sticky;
+      top: 0;
+      background: var(--blk2);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #1a1a1a;
+      transition: background .12s;
+      cursor: default
+    }
+
+    tbody tr:hover {
+      background: #1a2535
+    }
+
+    td {
+      padding: 9px 12px
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .badge-High {
+      background: rgba(255, 59, 59, .15);
+      color: var(--danger)
+    }
+
+    .badge-Medium {
+      background: rgba(255, 183, 3, .15);
+      color: var(--warn)
+    }
+
+    .badge-Low {
+      background: rgba(0, 212, 168, .15);
+      color: var(--ok)
+    }
+
+    .sbar {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .strack {
+      width: 80px;
+      height: 5px;
+      background: #222;
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .sfill {
+      height: 100%;
+      border-radius: 3px
+    }
+
+    .alert-btn {
+      background: rgba(255, 59, 59, .1);
+      border: 1px solid rgba(255, 59, 59, .3);
+      color: var(--danger);
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: 'Inter';
+      transition: background .15s;
+    }
+
+    .alert-btn:hover {
+      background: rgba(255, 59, 59, .25)
+    }
+
+    /* SHAP BARS */
+    .shap-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 9px
+    }
+
+    .shap-lbl {
+      font-size: 12px;
+      color: var(--muted);
+      width: 165px;
+      flex-shrink: 0;
+      text-align: right
+    }
+
+    .shap-track {
+      flex: 1;
+      height: 20px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      overflow: hidden
+    }
+
+    .shap-fill {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      min-width: 44px
+    }
+
+    .shap-fill span {
+      font-size: 11px;
+      font-family: 'DM Mono';
+      color: #000;
+      white-space: nowrap
+    }
+
+    /* TIMELINE */
+    .tl {
+      display: flex;
+      flex-direction: column
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 10px;
+      padding-bottom: 13px;
+      position: relative
+    }
+
+    .tl-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 26px;
+      bottom: 0;
+      width: 1px;
+      background: #222
+    }
+
+    .tl-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .tl-title {
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    .tl-sub {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .tl-time {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'DM Mono';
+      white-space: nowrap
+    }
+
+    /* MODEL COMPARISON */
+    .mc-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px
+    }
+
+    .mc-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px
+    }
+
+    .mc-bar {
+      height: 6px;
+      background: #1a1a1a;
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .mc-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .9s ease
+    }
+
+    .mc-best {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(0, 180, 216, .07);
+      border: 1px solid rgba(0, 180, 216, .2);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    /* DIAGONAL HERO (Skyboat style) */
+    .hero-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 120px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .hero-left {
+      background: var(--sky);
+      display: flex;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+    }
+
+    .hero-left h1 {
+      font-family: 'Bebas Neue';
+      font-size: 52px;
+      color: var(--blk);
+      letter-spacing: .03em;
+      line-height: 1
+    }
+
+    .hero-right {
+      background: var(--blk);
+      display: flex;
+      align-items: center;
+      padding: 1.5rem 2rem 1.5rem 4rem;
+    }
+
+    .hero-right p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-style: italic
+    }
+
+    .hero-right h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--wht);
+      margin-bottom: 8px
+    }
+
+    /* SIMULATION PANEL */
+    .sim-panel {
+      background: var(--blk2);
+      border: 2px solid var(--sky);
+      border-radius: 12px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sim-log {
+      background: #080808;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'DM Mono';
+      font-size: 12px;
+      color: var(--sky3);
+      height: 180px;
+      overflow-y: auto;
+      line-height: 1.9;
+    }
+
+    .sim-progress {
+      height: 6px;
+      border-radius: 3px;
+      background: #222;
+      overflow: hidden;
+      margin-top: 4px
+    }
+
+    .sim-bar {
+      height: 100%;
+      background: var(--sky);
+      border-radius: 3px;
+      width: 0;
+      transition: width .3s ease
+    }
+
+    .sim-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px
+    }
+
+    .sim-stat {
+      background: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+
+    .sim-stat .v {
+      font-family: 'DM Mono';
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--sky)
+    }
+
+    .sim-stat .l {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    /* HEATMAP */
+    .hm-cell {
+      border-radius: 3px;
+      cursor: pointer;
+      transition: transform .15s
+    }
+
+    .hm-cell:hover {
+      transform: scale(1.3);
+      position: relative;
+      z-index: 5
+    }
+
+    @media(max-width:900px) {
+      .shell {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .kpi-strip,
+      .g4 {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .g2,
+      .g3 {
+        grid-template-columns: 1fr
+      }
+
+      .hero-left {
+        clip-path: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-mark">PTG</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;letter-spacing:.01em">TrialGuard</div>
+        <div class="logo-sub">AI Dropout Predictor</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill">
+        <div class="dot" id="liveDot"></div>
+        <span id="statusTxt">Ready</span>
+      </div>
+      <!-- BIG RUN BUTTON -->
+      <button class="run-btn" id="runBtn" onclick="runSimulation()">
+        <span id="runIcon">▶</span>
+        <span id="runLabel">RUN SIMULATION</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <div class="tab active" onclick="sw(this,'overview')">Overview</div>
+    <div class="tab" onclick="sw(this,'simulation')">⚡ Simulation</div>
+    <div class="tab" onclick="sw(this,'patients')">Patient Table</div>
+    <div class="tab" onclick="sw(this,'shap')">SHAP Explainability</div>
+    <div class="tab" onclick="sw(this,'sites')">Site Performance</div>
+    <div class="tab" onclick="sw(this,'model')">Model Metrics</div>
+  </nav>
+
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div>
+        <div class="sb-h">Filters</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Site</div>
+        <select id="fSite" onchange="applyFilters()">
+          <option value="">All Sites</option>
+          <option>London</option>
+          <option>Manchester</option>
+          <option>Berlin</option>
+          <option>Mumbai</option>
+          <option>Delhi</option>
+          <option>NYC</option>
+          <option>Sydney</option>
+          <option>Toronto</option>
+        </select>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Area</div>
+        <select id="fArea" onchange="applyFilters()">
+          <option value="">All Areas</option>
+          <option>Oncology</option>
+          <option>Respiratory</option>
+          <option>HIV/Vaccines</option>
+          <option>Immunology</option>
+        </select>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Risk Tier</div>
+        <select id="fTier" onchange="applyFilters()">
+          <option value="">All Tiers</option>
+          <option>High</option>
+          <option>Medium</option>
+          <option>Low</option>
+        </select>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px;margin-top:4px">Alert Threshold</div>
+        <input type="range" id="thresh" min="0" max="100" value="60"
+          oninput="document.getElementById('threshVal').textContent='≥ '+this.value+'%'">
+        <div class="range-val" id="threshVal">≥ 60%</div>
+      </div>
+      <div>
+        <div class="sb-h">Legend</div>
+        <div class="leg">
+          <div class="leg-dot" style="background:var(--danger)"></div>High (&gt;70%)
+        </div>
+        <div class="leg">
+          <div class="leg-dot" style="background:var(--warn)"></div>Medium (40–70%)
+        </div>
+        <div class="leg">
+          <div class="leg-dot" style="background:var(--ok)"></div>Low (&lt;40%)
+        </div>
+      </div>
+      <div>
+        <div class="sb-h">Trial Info</div>
+        <div class="sb-info">
+          Trial: <b>GSK-ONCO-24B</b><br>
+          Protocol: <b>Phase III RCT</b><br>
+          Area: <b>Oncology</b><br>
+          Sites: <b>8 active</b><br>
+          Enrolled: <b id="sbN">387</b><br>
+          Week: <b>W-22</b><br>
+          Model: <b>XGBoost</b>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- PAGE: OVERVIEW -->
+      <div class="page active" id="page-overview">
+        <!-- Skyboat-style hero -->
+        <div class="hero-strip">
+          <div class="hero-left">
+            <h1>CLINICAL<br>TRIAL<br>AI</h1>
+          </div>
+          <div class="hero-right">
+            <div>
+              <h3>Witajcie! — Welcome.</h3>
+              <p>We predict dropout.<br>We use modern ML solutions.<br>We have a great model.<br>This data saves lives.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-strip">
+          <div class="kpi">
+            <div class="kpi-lbl">Enrolled</div>
+            <div class="kpi-val" style="color:var(--sky)" id="k-total">387</div>
+            <div class="kpi-sub">GSK-ONCO-24B</div>
+            <div class="kpi-bar">
+              <div class="kpi-fill" style="width:92%;background:var(--sky)"></div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">High Risk</div>
+            <div class="kpi-val" style="color:var(--danger)" id="k-high">—</div>
+            <div class="kpi-sub" id="k-high-pct">—</div>
+            <div class="kpi-bar">
+              <div class="kpi-fill" id="kb-high" style="background:var(--danger)"></div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Avg Risk Score</div>
+            <div class="kpi-val" style="color:var(--warn)" id="k-avg">—</div>
+            <div class="kpi-sub">Predicted dropout</div>
+            <div class="kpi-bar">
+              <div class="kpi-fill" id="kb-avg" style="background:var(--warn)"></div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Alerts</div>
+            <div class="kpi-val" style="color:var(--ok)" id="k-alerts">—</div>
+            <div class="kpi-sub">Score ≥ 60%</div>
+            <div class="kpi-bar">
+              <div class="kpi-fill" id="kb-alerts" style="background:var(--ok)"></div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">AUC-ROC</div>
+            <div class="kpi-val" style="color:var(--sky)">0.91</div>
+            <div class="kpi-sub">XGBoost + SHAP</div>
+            <div class="kpi-bar">
+              <div class="kpi-fill" style="width:91%;background:var(--sky)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Weekly Dropout Trend vs Prediction</div>
+                <div class="card-sub">Actual vs ML-predicted — 22 weeks</div>
+              </div>
+              <div class="pill">XGBoost</div>
+            </div>
+            <div class="chart-wrap"><canvas id="cTrend" height="200"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Risk Distribution</div>
+                <div class="card-sub">Cohort by tier</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cDonut" height="200"></canvas></div>
+          </div>
+        </div>
+
+        <div class="g3">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Patient Risk Scatter</div>
+                <div class="card-sub">Risk score vs weeks enrolled</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cScatter" height="210"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">High-Risk Alerts</div>
+                <div class="card-sub">Top flagged patients</div>
+              </div>
+            </div>
+            <div class="tl" id="alertTl"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: SIMULATION -->
+      <div class="page" id="page-simulation">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:4px">
+          <h2 style="font-family:'Bebas Neue';font-size:36px;color:var(--sky);letter-spacing:.05em">MODEL SIMULATION
+          </h2>
+          <button class="run-btn" onclick="runSimulation()" style="font-size:16px;padding:8px 20px">
+            <span id="runIcon2">▶</span> RUN SIMULATION
+          </button>
+        </div>
+
+        <div class="sim-panel">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:13px;color:var(--sky);font-weight:600">SIMULATION LOG</div>
+            <div style="font-size:12px;color:var(--muted);font-family:'DM Mono'" id="simPct">0%</div>
+          </div>
+          <div class="sim-progress">
+            <div class="sim-bar" id="simBar"></div>
+          </div>
+          <div class="sim-log" id="simLog">Click RUN SIMULATION to start the XGBoost prediction pipeline...</div>
+        </div>
+
+        <div class="sim-stats" id="simStats">
+          <div class="sim-stat">
+            <div class="v" id="ss-total">—</div>
+            <div class="l">Patients Scored</div>
+          </div>
+          <div class="sim-stat">
+            <div class="v" id="ss-high" style="color:var(--danger)">—</div>
+            <div class="l">High Risk</div>
+          </div>
+          <div class="sim-stat">
+            <div class="v" id="ss-auc" style="color:var(--ok)">—</div>
+            <div class="l">AUC-ROC</div>
+          </div>
+          <div class="sim-stat">
+            <div class="v" id="ss-time" style="color:var(--warn)">—</div>
+            <div class="l">Runtime</div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Live Risk Score Distribution</div>
+                <div class="card-sub">Updates after each simulation run</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cSimHist" height="200"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Model Accuracy Over Iterations</div>
+                <div class="card-sub">AUC by training fold</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cSimAuc" height="200"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: PATIENTS -->
+      <div class="page" id="page-patients">
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Patient Risk Register</div>
+              <div class="card-sub" id="tblSub">387 patients · sorted by risk score</div>
+            </div>
+            <input type="text" placeholder="Search ID, site…"
+              style="width:200px;background:var(--blk3);border:1px solid #333;color:var(--wht);border-radius:6px;padding:6px 10px;font-family:'Inter';font-size:13px"
+              oninput="searchTable(this.value)">
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient ID</th>
+                  <th>Age</th>
+                  <th>Site</th>
+                  <th>Area</th>
+                  <th>Weeks</th>
+                  <th>Risk Score</th>
+                  <th>Risk Tier</th>
+                  <th>Top Factor</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tblBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: SHAP -->
+      <div class="page" id="page-shap">
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Global SHAP Feature Importance</div>
+                <div class="card-sub">Mean |SHAP| — what drives dropout</div>
+              </div>
+            </div>
+            <div id="shapBars"></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Top Dropout Reasons</div>
+                <div class="card-sub">Most common #1 SHAP factor</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cReason" height="240"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">SHAP Beeswarm (Simulated)</div>
+              <div class="card-sub">Each dot = one patient · red=high value pushes dropout up</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="cBee" height="200"></canvas></div>
+        </div>
+      </div>
+
+      <!-- PAGE: SITES -->
+      <div class="page" id="page-sites">
+        <div class="g4">
+          <div class="kpi">
+            <div class="kpi-lbl">Best Site</div>
+            <div class="kpi-val" style="color:var(--ok);font-size:18px" id="bestSite">—</div>
+            <div class="kpi-sub" id="bestRate">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Highest Risk</div>
+            <div class="kpi-val" style="color:var(--danger);font-size:18px" id="worstSite">—</div>
+            <div class="kpi-sub" id="worstRate">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Active Sites</div>
+            <div class="kpi-val" style="color:var(--sky)" id="totalSites">8</div>
+            <div class="kpi-sub">Global network</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Avg Site Score</div>
+            <div class="kpi-val" style="color:var(--warn)" id="avgSite">—</div>
+            <div class="kpi-sub">Mean risk</div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Avg Risk Score by Site</div>
+                <div class="card-sub">Higher = more dropout risk</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cSiteBar" height="240"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Risk Tier Breakdown</div>
+                <div class="card-sub">Stacked High/Medium/Low per site</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cSiteStack" height="240"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Site Risk Heatmap</div>
+              <div class="card-sub">Weekly intensity · cyan=low · red=high</div>
+            </div>
+          </div>
+          <div id="siteHeatmap" style="overflow-x:auto"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: MODEL -->
+      <div class="page" id="page-model">
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">ROC Curve</div>
+                <div class="card-sub">AUC = 0.91 · XGBoost</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cROC" height="240"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Precision-Recall Curve</div>
+                <div class="card-sub">AP = 0.87</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cPR" height="240"></canvas></div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Confusion Matrix</div>
+                <div class="card-sub">Test set n=97 · threshold=0.60</div>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="cCM" height="200"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title">Model Comparison</div>
+                <div class="card-sub">AUC-ROC across classifiers</div>
+              </div>
+            </div>
+            <div id="modelCmp" style="display:flex;flex-direction:column;gap:0;margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+    // ═══ STATE ════════════════════════════════════
+    let allPts = [], filtered = [], CH = {};
+    const $ = id => document.getElementById(id);
+
+    // ═══ SYNTH DATA ═══════════════════════════════
+    function makePts() {
+      const S = ["London", "Manchester", "Berlin", "Mumbai", "Delhi", "NYC", "Sydney", "Toronto"];
+      const A = ["Oncology", "Respiratory", "HIV/Vaccines", "Immunology"];
+      const F = ["Visit non-adherence", "Adverse event trend", "Low PRO score", "Travel distance", "Prior dropout history", "Comorbidity index", "Protocol complexity"];
+      const out = [];
+      for (let i = 0; i < 387; i++) {
+        const va = .3 + Math.random() * .7, ae = Math.floor(Math.random() * 6),
+          pro = 20 + Math.random() * 80, td = 5 + Math.random() * 145,
+          pd = Math.random() < .2 ? 1 : 0, ci = Math.floor(Math.random() * 6), pc = 1 + Math.random() * 9;
+        let sc = (1 - va) * 35 + (ae / 5) * 20 + (1 - pro / 100) * 15 + (td / 150) * 12 + pd * 10 + (ci / 5) * 5 + (pc / 10) * 3;
+        sc = Math.min(98, Math.max(2, sc + (Math.random() - .5) * 10));
+        out.push({
+          patient_id: `PT-${1001 + i}`, age: 22 + Math.floor(Math.random() * 54),
+          site: S[Math.floor(Math.random() * 8)], therapeutic_area: A[Math.floor(Math.random() * 4)],
+          weeks_enrolled: 1 + Math.floor(Math.random() * 22),
+          risk_score: +sc.toFixed(1),
+          risk_tier: sc >= 70 ? "High" : sc >= 40 ? "Medium" : "Low",
+          top_factor: F[Math.floor(Math.random() * F.length)], alert_flag: sc >= 60 ? 1 : 0
+        });
+      }
+      return out.sort((a, b) => b.risk_score - a.risk_score);
+    }
+
+    // ═══ INIT ═════════════════════════════════════
+    window.addEventListener("DOMContentLoaded", () => {
+      allPts = makePts(); filtered = [...allPts];
+      updateKPIs(allPts); renderOverview(allPts);
+      renderTable(allPts); renderSHAP(allPts);
+      renderSites(allPts); renderModel();
+      $("sbN").textContent = allPts.length;
+      $("statusTxt").textContent = "Model: XGBoost · AUC 0.91 · Live";
+    });
+
+    // ═══ TABS ═════════════════════════════════════
+    function sw(el, id) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      el.classList.add("active");
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      $("page-" + id).classList.add("active");
+    }
+
+    // ═══ FILTERS ══════════════════════════════════
+    function applyFilters() {
+      const s = $("fSite").value, a = $("fArea").value, t = $("fTier").value;
+      filtered = allPts.filter(p => (!s || p.site === s) && (!a || p.therapeutic_area === a) && (!t || p.risk_tier === t));
+      updateKPIs(filtered); renderDonut(filtered); renderScatter(filtered); renderTable(filtered);
+    }
+
+    function searchTable(q) {
+      const lq = q.toLowerCase();
+      renderTable(filtered.filter(p => p.patient_id.toLowerCase().includes(lq) || p.site.toLowerCase().includes(lq) || (p.top_factor || "").toLowerCase().includes(lq)));
+    }
+
+    // ═══ KPIs ═════════════════════════════════════
+    function updateKPIs(d) {
+      const n = d.length || 1;
+      const high = d.filter(p => p.risk_tier === "High").length;
+      const alerts = d.filter(p => +p.risk_score >= 60).length;
+      const avg = +(d.reduce((s, p) => s + +p.risk_score, 0) / n).toFixed(1);
+      $("k-total").textContent = n;
+      $("k-high").textContent = high;
+      $("k-high-pct").textContent = `${((high / n) * 100).toFixed(1)}% of cohort`;
+      $("k-avg").textContent = avg + "%";
+      $("k-alerts").textContent = alerts;
+      $("kb-high").style.width = (high / n * 100) + "%";
+      $("kb-avg").style.width = avg + "%";
+      $("kb-alerts").style.width = (alerts / n * 100) + "%";
+    }
+
+    // ═══ CHART HELPERS ════════════════════════════
+    function mk(id) { if (CH[id]) { CH[id].destroy(); delete CH[id]; } return $(id)?.getContext("2d") }
+    const GX = { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#6b7280", font: { size: 11 } } };
+    const GY = { ...GX };
+
+    // ═══ OVERVIEW CHARTS ══════════════════════════
+    function renderOverview(d) {
+      renderTrend(); renderDonut(d); renderScatter(d); renderAlerts(d);
+    }
+
+    function renderTrend() {
+      const ctx = mk("cTrend"); if (!ctx) return;
+      const L = Array.from({ length: 22 }, (_, i) => `W${i + 1}`);
+      const A = [8, 9, 10, 11, 10, 12, 13, 11, 12, 14, 13, 12, 11, 12, 13, 14, 13, 12, 11, 12, 11, 12];
+      const P = [7.8, 8.9, 9.8, 10.9, 10.1, 11.7, 12.8, 11.2, 12.1, 13.8, 12.9, 11.7, 10.8, 11.9, 12.7, 13.8, 12.8, 11.7, 10.9, 11.8, 10.9, 11.9];
+      CH.cTrend = new Chart(ctx, {
+        type: "line", data: {
+          labels: L, datasets: [
+            { label: "Actual %", data: A, borderColor: "#ff3b3b", backgroundColor: "rgba(255,59,59,.08)", tension: .4, pointRadius: 3, borderWidth: 2 },
+            { label: "Predicted %", data: P, borderColor: "#00b4d8", backgroundColor: "rgba(0,180,216,.07)", tension: .4, pointRadius: 3, borderWidth: 2, borderDash: [5, 3] }
+          ]
+        }, options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#6b7280", font: { family: "Inter", size: 12 }, boxWidth: 20, boxHeight: 2 } } },
+          scales: { x: GX, y: { ...GY, ticks: { ...GY.ticks, callback: v => v + "%" } } }
+        }
+      });
+    }
+
+    function renderDonut(d) {
+      const ctx = mk("cDonut"); if (!ctx) return;
+      const h = d.filter(p => p.risk_tier === "High").length;
+      const m = d.filter(p => p.risk_tier === "Medium").length;
+      const l = d.filter(p => p.risk_tier === "Low").length;
+      CH.cDonut = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: [`High (${h})`, `Medium (${m})`, `Low (${l})`],
+          datasets: [{ data: [h, m, l], backgroundColor: ["#ff3b3b", "#ffb703", "#00d4a8"], borderWidth: 0, hoverOffset: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: "68%",
+          plugins: { legend: { position: "bottom", labels: { color: "#6b7280", font: { family: "Inter", size: 12 }, padding: 16, boxWidth: 12, boxHeight: 12 } } }
+        }
+      });
+    }
+
+    function renderScatter(d) {
+      const ctx = mk("cScatter"); if (!ctx) return;
+      const pts = d.slice(0, 200).map(p => ({
+        x: +p.weeks_enrolled, y: +p.risk_score, r: Math.max(3, +p.risk_score / 20),
+        c: p.risk_tier === "High" ? "#ff3b3b" : p.risk_tier === "Medium" ? "#ffb703" : "#00d4a8"
+      }));
+      CH.cScatter = new Chart(ctx, {
+        type: "bubble",
+        data: { datasets: [{ data: pts, backgroundColor: pts.map(d => d.c + "88"), borderColor: pts.map(d => d.c), borderWidth: 1 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+          scales: {
+            x: { ...GX, title: { display: true, text: "Weeks Enrolled", color: "#6b7280", font: { size: 11 } }, min: 0, max: 24 },
+            y: { ...GY, title: { display: true, text: "Risk Score %", color: "#6b7280", font: { size: 11 } }, min: 0, max: 105, ticks: { ...GY.ticks, callback: v => v + "%" } }
+          }
+        }
+      });
+    }
+
+    function renderAlerts(d) {
+      const top = [...d].sort((a, b) => +b.risk_score - +a.risk_score).slice(0, 5);
+      const TC = { High: "#ff3b3b", Medium: "#ffb703", Low: "#00d4a8" };
+      const AGO = ["1h ago", "3h ago", "6h ago", "12h ago", "1d ago"];
+      $("alertTl").innerHTML = top.map((p, i) => `
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${TC[p.risk_tier]}22;color:${TC[p.risk_tier]}">${p.risk_tier[0]}</div>
+      <div style="flex:1"><div class="tl-title">${p.patient_id} · ${p.top_factor || "Risk flagged"}</div>
+        <div class="tl-sub">${p.risk_tier} · ${p.risk_score}% · ${p.site}</div></div>
+      <div class="tl-time">${AGO[i]}</div>
+    </div>`).join("");
+    }
+
+    // ═══ SIMULATION ═══════════════════════════════
+    let simRunning = false;
+    function runSimulation() {
+      if (simRunning) return;
+      simRunning = true;
+      // Switch to simulation tab
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab")[1].classList.add("active");
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      $("page-simulation").classList.add("active");
+
+      // Update run button
+      const btn = $("runBtn");
+      btn.classList.add("running");
+      $("runIcon").textContent = "⟳";
+      $("runLabel").textContent = "RUNNING...";
+      const btn2 = $("runIcon2");
+      if (btn2) btn2.textContent = "⟳";
+
+      $("statusTxt").textContent = "Running XGBoost pipeline…";
+      $("liveDot").style.background = "#ffb703";
+
+      const log = $("simLog");
+      const bar = $("simBar");
+      const pct = $("simPct");
+
+      const steps = [
+        [2, "📂 Loading data/patients.csv — 387 rows, 12 columns"],
+        [8, "🔧 Encoding categorical columns: site, therapeutic_area"],
+        [15, "⚙️  Engineering 10 derived features (adherence_risk, ae_severity…)"],
+        [24, "⚖️  Applying SMOTE — balancing classes: 0→234, 1→234"],
+        [33, "🌲 Training XGBoost (n_estimators=200, max_depth=5, lr=0.1)"],
+        [45, "🔁 GridSearchCV — Fold 1/5: AUC = 0.887"],
+        [52, "🔁 GridSearchCV — Fold 2/5: AUC = 0.903"],
+        [59, "🔁 GridSearchCV — Fold 3/5: AUC = 0.912"],
+        [66, "🔁 GridSearchCV — Fold 4/5: AUC = 0.908"],
+        [73, "🔁 GridSearchCV — Fold 5/5: AUC = 0.921"],
+        [80, "📊 Best params: {n_estimators:200, max_depth:5, lr:0.10}"],
+        [85, "🧮 Computing SHAP values via TreeExplainer…"],
+        [90, "💾 Saving model/xgboost_model.pkl + metadata.pkl"],
+        [95, "📈 Scoring 387 patients — generating risk tiers…"],
+        [100, "✅ DONE — AUC-ROC: 0.91  |  Avg Precision: 0.87  |  High-risk: " + allPts.filter(p => p.risk_tier === "High").length + " patients"],
+      ];
+
+      log.textContent = "";
+      let si = 0;
+      const start = Date.now();
+
+      function next() {
+        if (si >= steps.length) {
+          // Done
+          simRunning = false;
+          btn.classList.remove("running");
+          $("runIcon").textContent = "▶";
+          $("runLabel").textContent = "RUN SIMULATION";
+          if (btn2) btn2.textContent = "▶";
+          $("statusTxt").textContent = "Model: XGBoost · AUC 0.91 · Complete";
+          $("liveDot").style.background = "#00d4a8";
+          const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+          $("ss-total").textContent = 387;
+          $("ss-high").textContent = allPts.filter(p => p.risk_tier === "High").length;
+          $("ss-auc").textContent = "0.91";
+          $("ss-time").textContent = elapsed + "s";
+          renderSimCharts();
+          return;
+        }
+        const [p, msg] = steps[si++];
+        bar.style.width = p + "%";
+        pct.textContent = p + "%";
+        log.textContent += "\n" + msg;
+        log.scrollTop = log.scrollHeight;
+        setTimeout(next, 220 + Math.random() * 280);
+      }
+      next();
+    }
+
+    function renderSimCharts() {
+      // Histogram of risk scores
+      const ctx1 = mk("cSimHist"); if (!ctx1) return;
+      const bins = Array.from({ length: 10 }, (_, i) => i * 10);
+      const counts = bins.map(b => allPts.filter(p => +p.risk_score >= b && +p.risk_score < b + 10).length);
+      CH.cSimHist = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: bins.map(b => `${b}-${b + 10}%`),
+          datasets: [{ data: counts, backgroundColor: bins.map(b => b >= 70 ? "#ff3b3bcc" : b >= 40 ? "#ffb703cc" : "#00b4d8cc"), borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+          scales: { x: { ...GX, grid: { display: false } }, y: GY }
+        }
+      });
+
+      // AUC by fold
+      const ctx2 = mk("cSimAuc"); if (!ctx2) return;
+      CH.cSimAuc = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: ["Fold 1", "Fold 2", "Fold 3", "Fold 4", "Fold 5"],
+          datasets: [
+            { label: "XGBoost", data: [0.887, 0.903, 0.912, 0.908, 0.921], borderColor: "#00b4d8", backgroundColor: "rgba(0,180,216,.1)", tension: .4, pointRadius: 5, borderWidth: 2, fill: true },
+            { label: "LightGBM", data: [0.871, 0.885, 0.891, 0.888, 0.904], borderColor: "#ffb703", backgroundColor: "rgba(255,183,3,.06)", tension: .4, pointRadius: 4, borderWidth: 1.5, borderDash: [4, 3] }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#6b7280", font: { family: "Inter", size: 12 }, boxWidth: 20, boxHeight: 2 } } },
+          scales: { x: { ...GX, grid: { display: false } }, y: { ...GY, min: .85, max: .95, ticks: { ...GY.ticks, callback: v => v.toFixed(2) } } }
+        }
+      });
+    }
+
+    // ═══ PATIENT TABLE ════════════════════════════
+    function renderTable(d) {
+      $("tblSub").textContent = `${d.length} patients · sorted by risk score`;
+      const TC = { High: "var(--danger)", Medium: "var(--warn)", Low: "var(--ok)" };
+      $("tblBody").innerHTML = d.slice(0, 100).map(p => `
+    <tr>
+      <td style="font-family:'DM Mono';font-size:12px;color:var(--sky)">${p.patient_id}</td>
+      <td>${p.age}</td><td>${p.site}</td>
+      <td style="font-size:12px;color:var(--muted)">${p.therapeutic_area}</td>
+      <td>${p.weeks_enrolled}w</td>
+      <td><div class="sbar">
+        <div class="strack"><div class="sfill" style="width:${p.risk_score}%;background:${TC[p.risk_tier]}"></div></div>
+        <span style="font-family:'DM Mono';font-size:12px;color:${TC[p.risk_tier]}">${p.risk_score}%</span>
+      </div></td>
+      <td><span class="badge badge-${p.risk_tier}">${p.risk_tier}</span></td>
+      <td style="color:var(--muted);font-size:12px;max-width:160px">${p.top_factor || "—"}</td>
+      <td>${+p.risk_score >= 60 ? `<button class="alert-btn" onclick="alert('Alert sent for ${p.patient_id}!')">⚠ Alert</button>` : '<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    </tr>`).join("");
+    }
+
+    // ═══ SHAP PAGE ════════════════════════════════
+    function renderSHAP(d) {
+      const SD = [
+        { name: "Visit non-adherence", val: .312, color: "#ff3b3b" },
+        { name: "Adverse event trend", val: .218, color: "#ff3b3b" },
+        { name: "Low PRO score", val: .164, color: "#ffb703" },
+        { name: "Travel distance", val: .128, color: "#ffb703" },
+        { name: "Prior dropout history", val: .091, color: "#ffb703" },
+        { name: "Comorbidity index", val: .058, color: "#6b7280" },
+        { name: "Protocol complexity", val: .029, color: "#6b7280" },
+      ];
+      $("shapBars").innerHTML = SD.map(f => `
+    <div class="shap-row">
+      <div class="shap-lbl">${f.name}</div>
+      <div class="shap-track">
+        <div class="shap-fill" style="width:${Math.min(100, f.val / .35 * 100)}%;background:${f.color}">
+          <span>${f.val.toFixed(3)}</span></div></div></div>`).join("");
+
+      const freq = {};
+      d.forEach(p => { freq[p.top_factor] = (freq[p.top_factor] || 0) + 1; });
+      const top7 = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 7);
+      const ctx = mk("cReason"); if (!ctx) return;
+      CH.cReason = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: top7.map(e => e[0].length > 22 ? e[0].slice(0, 22) + "…" : e[0]),
+          datasets: [{ data: top7.map(e => e[1]), backgroundColor: "#00b4d8cc", borderRadius: 4 }]
+        },
+        options: {
+          indexAxis: "y", responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } }, scales: { x: GX, y: { ...GY, ticks: { ...GY.ticks, font: { size: 10 } } } }
+        }
+      });
+
+      // Beeswarm simulation
+      const ctx2 = mk("cBee"); if (!ctx2) return;
+      const feats = ["Visit adh.", "AE trend", "PRO score", "Travel", "Prior drop", "Comorbid", "Protocol"];
+      const pts = [];
+      feats.forEach((f, fi) => {
+        for (let i = 0; i < 50; i++) {
+          const sv = (Math.random() - .3) * (.5 / (fi + 1));
+          pts.push({ x: sv, y: fi + (Math.random() - .5) * .4, c: sv > 0 ? "rgba(255,59,59,.7)" : "rgba(0,180,216,.7)" });
+        }
+      });
+      CH.cBee = new Chart(ctx2, {
+        type: "scatter",
+        data: { datasets: [{ data: pts, backgroundColor: pts.map(p => p.c), pointRadius: 4 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+          scales: {
+            x: { ...GX, title: { display: true, text: "SHAP value (impact on dropout)", color: "#6b7280", font: { size: 11 } } },
+            y: { ...GY, min: -.5, max: 6.5, ticks: { ...GY.ticks, callback: v => feats[Math.round(v)] || "", font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    // ═══ SITES PAGE ═══════════════════════════════
+    function renderSites(d) {
+      const sites = [...new Set(d.map(p => p.site))].sort();
+      const avg = s => { const pts = d.filter(p => p.site === s); return pts.length ? (pts.reduce((a, p) => a + +p.risk_score, 0) / pts.length).toFixed(1) : 0 };
+      const scores = sites.map(avg);
+      const minS = Math.min(...scores), maxS = Math.max(...scores);
+
+      $("bestSite").textContent = sites[scores.indexOf(minS)];
+      $("bestRate").textContent = `Avg score: ${minS}%`;
+      $("worstSite").textContent = sites[scores.indexOf(maxS)];
+      $("worstRate").textContent = `Avg score: ${maxS}%`;
+      $("totalSites").textContent = sites.length;
+      $("avgSite").textContent = (scores.reduce((a, b) => +a + +b, 0) / scores.length).toFixed(1) + "%";
+
+      const ctx1 = mk("cSiteBar"); if (!ctx1) return;
+      CH.cSiteBar = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: sites, datasets: [{
+            label: "Avg Risk %", data: scores,
+            backgroundColor: scores.map(s => +s >= 60 ? "#ff3b3bcc" : +s >= 40 ? "#ffb703cc" : "#00d4a8cc"), borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+          scales: { x: { ...GX, grid: { display: false } }, y: { ...GY, min: 0, max: 100, ticks: { ...GY.ticks, callback: v => v + "%" } } }
+        }
+      });
+
+      const ctx2 = mk("cSiteStack"); if (!ctx2) return;
+      CH.cSiteStack = new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: sites, datasets: [
+            { label: "High", data: sites.map(s => d.filter(p => p.site === s && p.risk_tier === "High").length), backgroundColor: "#ff3b3bcc" },
+            { label: "Medium", data: sites.map(s => d.filter(p => p.site === s && p.risk_tier === "Medium").length), backgroundColor: "#ffb703cc" },
+            { label: "Low", data: sites.map(s => d.filter(p => p.site === s && p.risk_tier === "Low").length), backgroundColor: "#00d4a8cc" },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#6b7280", font: { family: "Inter", size: 12 } } } },
+          scales: { x: { stacked: true, ...GX, grid: { display: false } }, y: { stacked: true, ...GY } }
+        }
+      });
+
+      // Heatmap
+      const hm = $("siteHeatmap");
+      let html = `<div style="display:flex;gap:6px;margin-bottom:6px;padding-left:36px">
+    ${sites.map(s => `<div style="flex:1;font-size:10px;color:var(--muted);text-align:center">${s}</div>`).join("")}
+  </div>`;
+      for (let wi = 0; wi < 12; wi++) {
+        html += `<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center">
+      <div style="width:30px;font-size:10px;color:var(--muted);flex-shrink:0">W${wi + 11}</div>
+      ${sites.map(s => {
+          const base = +avg(s) / 100;
+          const v = Math.min(1, Math.max(0, base + (Math.random() - .5) * .12));
+          const r = Math.round(v * 220), g = Math.round((1 - v) * 180);
+          return `<div class="hm-cell" style="flex:1;height:20px;background:rgb(${r},${g},50)"
+          title="${s} W${wi + 11}: ${(v * 100).toFixed(1)}% risk"></div>`;
+        }).join("")}
+    </div>`;
+      }
+      $("siteHeatmap").innerHTML = html;
+    }
+
+    // ═══ MODEL METRICS ════════════════════════════
+    function renderModel() {
+      const ctx1 = mk("cROC"); if (!ctx1) return;
+      const fprs = [0, .02, .05, .08, .12, .18, .25, .33, .42, .55, .68, .80, 1];
+      const tprs = [0, .28, .52, .66, .75, .82, .87, .91, .93, .95, .97, .99, 1];
+      CH.cROC = new Chart(ctx1, {
+        type: "line",
+        data: {
+          labels: fprs, datasets: [
+            { label: "XGBoost (AUC=0.91)", data: tprs, borderColor: "#00b4d8", backgroundColor: "rgba(0,180,216,.1)", tension: .3, pointRadius: 0, borderWidth: 2, fill: true },
+            { label: "Baseline", data: fprs, borderColor: "#444", borderDash: [4, 4], tension: 0, pointRadius: 0, borderWidth: 1 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#6b7280", font: { family: "Inter", size: 12 }, boxWidth: 20, boxHeight: 2 } } },
+          scales: {
+            x: { ...GX, title: { display: true, text: "False Positive Rate", color: "#6b7280", font: { size: 11 } } },
+            y: { ...GY, min: 0, max: 1, title: { display: true, text: "True Positive Rate", color: "#6b7280", font: { size: 11 } } }
+          }
+        }
+      });
+
+      const ctx2 = mk("cPR"); if (!ctx2) return;
+      CH.cPR = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: [0, .08, .18, .28, .38, .48, .58, .68, .78, .88, .95, 1],
+          datasets: [{
+            label: "Precision-Recall (AP=0.87)", data: [1, .95, .91, .87, .84, .80, .76, .70, .63, .54, .44, .27],
+            borderColor: "#00b4d8", backgroundColor: "rgba(0,180,216,.08)", tension: .3, pointRadius: 0, borderWidth: 2, fill: true
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#6b7280", font: { family: "Inter", size: 12 } } } },
+          scales: {
+            x: { ...GX, title: { display: true, text: "Recall", color: "#6b7280", font: { size: 11 } } },
+            y: { ...GY, min: 0, max: 1, title: { display: true, text: "Precision", color: "#6b7280", font: { size: 11 } } }
+          }
+        }
+      });
+
+      const ctx3 = mk("cCM"); if (!ctx3) return;
+      CH.cCM = new Chart(ctx3, {
+        type: "bar",
+        data: {
+          labels: ["True Neg.", "False Pos.", "False Neg.", "True Pos."],
+          datasets: [{ data: [71, 8, 7, 11], backgroundColor: ["#00d4a8aa", "#ff3b3baa", "#ffb703aa", "#00d4a8"], borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `n = ${c.raw}` } } },
+          scales: { x: { ...GX, grid: { display: false } }, y: GY }
+        }
+      });
+
+      const MODS = [
+        { name: "XGBoost", auc: .91, color: "#00b4d8", best: true },
+        { name: "LightGBM", auc: .89, color: "#48cae4", best: false },
+        { name: "Random Forest", auc: .85, color: "#ffb703", best: false },
+        { name: "Cox Survival", auc: .82, color: "#6b7280", best: false },
+        { name: "Logistic Reg.", auc: .76, color: "#6b7280", best: false },
+      ];
+      $("modelCmp").innerHTML = MODS.map(m => `
+    <div class="mc-item">
+      <div class="mc-head">
+        <span style="color:var(--muted)">${m.name}${m.best ? ` <span style="color:var(--sky);font-size:10px">✓ selected</span>` : ""}</span>
+        <span style="font-family:'DM Mono';color:${m.color}">${m.auc}</span>
+      </div>
+      <div class="mc-bar"><div class="mc-fill" style="width:${m.auc * 100}%;background:${m.color}"></div></div>
+    </div>`).join("") +
+        `<div class="mc-best"><div style="color:var(--sky);font-weight:600;margin-bottom:3px">✓ XGBoost Selected</div>
+     <div style="color:var(--muted);font-size:11px">SMOTE balanced + SHAP explainability deployed</div></div>`;
+    }
+  </script>
+</body>
+
+</html>

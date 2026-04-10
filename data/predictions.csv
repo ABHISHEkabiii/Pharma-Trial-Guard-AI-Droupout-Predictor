@@ -1,0 +1,4 @@
+patient_id,risk_score,tier
+1,0.72,high
+2,0.25,low
+3,0.88,high
