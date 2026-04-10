@@ -1,72 +1,34 @@
 <div align="center">
 
-<!-- Animated Banner -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="100%">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d0d0d"/>
-      <stop offset="50%" style="stop-color:#003d57"/>
-      <stop offset="100%" style="stop-color:#0096c7"/>
-    </linearGradient>
-    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#00b4d8;stop-opacity:0.6"/>
-      <stop offset="100%" style="stop-color:#0096c7;stop-opacity:0.2"/>
-    </linearGradient>
-    <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#00d4a8;stop-opacity:0.3"/>
-      <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0.1"/>
-    </linearGradient>
-  </defs>
-  <!-- Background -->
-  <rect width="900" height="200" fill="url(#bg)" rx="0"/>
-  <!-- Wave shapes -->
-  <path d="M0,120 C150,80 300,160 450,110 C600,60 750,140 900,100 L900,200 L0,200 Z" fill="url(#wave1)"/>
-  <path d="M0,150 C200,110 400,180 600,140 C750,110 850,160 900,145 L900,200 L0,200 Z" fill="url(#wave2)"/>
-  <!-- Grid lines for tech feel -->
-  <line x1="0" y1="40" x2="900" y2="40" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
-  <line x1="0" y1="80" x2="900" y2="80" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
-  <line x1="0" y1="120" x2="900" y2="120" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
-  <line x1="150" y1="0" x2="150" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
-  <line x1="450" y1="0" x2="450" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
-  <line x1="750" y1="0" x2="750" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
-  <!-- Accent dots -->
-  <circle cx="60" cy="40" r="3" fill="#00b4d8" fill-opacity="0.6"/>
-  <circle cx="840" cy="160" r="3" fill="#00d4a8" fill-opacity="0.6"/>
-  <circle cx="450" cy="25" r="2" fill="#00b4d8" fill-opacity="0.4"/>
-  <!-- Title -->
-  <text x="450" y="85" font-family="'Courier New', monospace" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="4">PharmaTrialGuard</text>
-  <!-- Cyan underline accent -->
-  <rect x="280" y="92" width="340" height="2" fill="#00b4d8" rx="1"/>
-  <!-- Subtitle -->
-  <text x="450" y="125" font-family="'Courier New', monospace" font-size="13" fill="#00b4d8" text-anchor="middle" letter-spacing="2">AI-POWERED CLINICAL TRIAL DROPOUT PREDICTION &amp; EXPLAINABILITY</text>
-  <!-- Corner brackets for techy feel -->
-  <path d="M20,15 L20,5 L30,5" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
-  <path d="M870,15 L870,5 L860,5" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
-  <path d="M20,185 L20,195 L30,195" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
-  <path d="M870,185 L870,195 L860,195" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
-</svg>
-
-<!-- Badges Row 1 -->
-<p>
-  <img src="https://img.shields.io/badge/Python-3.10+-00b4d8?style=for-the-badge&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/XGBoost-Model-ff6b35?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PC9zdmc+&logoColor=white"/>
-  <img src="https://img.shields.io/badge/SHAP-Explainability-00d4a8?style=for-the-badge&logoColor=white"/>
-  <img src="https://img.shields.io/badge/scikit--learn-ML-f7931e?style=for-the-badge&logo=scikit-learn&logoColor=white"/>
-</p>
-
-<!-- Badges Row 2 -->
-<p>
-  <img src="https://img.shields.io/badge/Status-Active-00d4a8?style=flat-square&logo=statuspage&logoColor=white"/>
-  <img src="https://img.shields.io/badge/License-MIT-00b4d8?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Clinical%20AI-Pharma-ff3b3b?style=flat-square&logo=health&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Dashboard-Interactive-ffb703?style=flat-square&logo=chartdotjs&logoColor=black"/>
-  <img src="https://img.shields.io/badge/Patients-400%20Synthetic-6c5ce7?style=flat-square"/>
-</p>
+<!-- ✅ ANIMATED BANNER — capsule-render (live waves + twinkling) -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=220&section=header&text=PharmaTrialGuard&fontSize=52&fontColor=FFFFFF&fontAlignY=40&desc=AI-Powered%20Clinical%20Trial%20Dropout%20Prediction%20%26%20Explainability&descAlignY=62&descSize=15&descColor=00b4d8&animation=twinkling" width="100%"/>
 
 <br/>
 
-<!-- Animated typing SVG -->
-<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Bebas+Neue&size=28&pause=1000&color=00B4D8&center=true&vCenter=true&width=700&lines=Predicting+Patient+Dropout+Before+It+Happens;XGBoost+%2B+SHAP+Explainability+Engine;Transparent+AI+for+Clinical+Research;Built+for+Pharma+%7C+Designed+for+Trust" alt="Typing SVG" /></a>
+<!-- ✅ ANIMATED TYPING SVG — demolab (live typewriter effect) -->
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=800&color=00B4D8&background=00000000&center=true&vCenter=true&multiline=false&width=750&height=45&lines=Predicting+Patient+Dropout+Before+It+Happens...;XGBoost+%2B+SHAP+Explainability+Engine;Transparent+AI+for+Clinical+Research;Built+for+Pharma+%7C+Designed+for+Trust" alt="Typing SVG"/>
+
+<br/><br/>
+
+<!-- ✅ BADGES ROW 1 -->
+<img src="https://img.shields.io/badge/Python-3.10+-00b4d8?style=for-the-badge&logo=python&logoColor=white"/>
+<img src="https://img.shields.io/badge/XGBoost-Classifier-ff6b35?style=for-the-badge&logo=buffer&logoColor=white"/>
+<img src="https://img.shields.io/badge/SHAP-Explainability-00d4a8?style=for-the-badge&logo=leaflet&logoColor=white"/>
+<img src="https://img.shields.io/badge/scikit--learn-ML-f7931e?style=for-the-badge&logo=scikit-learn&logoColor=white"/>
+
+<br/>
+
+<!-- ✅ BADGES ROW 2 -->
+<img src="https://img.shields.io/badge/Status-Active-00d4a8?style=flat-square&logo=statuspage&logoColor=white"/>
+<img src="https://img.shields.io/badge/License-MIT-00b4d8?style=flat-square"/>
+<img src="https://img.shields.io/badge/Clinical%20AI-Pharma-ff3b3b?style=flat-square"/>
+<img src="https://img.shields.io/badge/Dashboard-Interactive-ffb703?style=flat-square&logo=chartdotjs&logoColor=black"/>
+<img src="https://img.shields.io/badge/Patients-400%20Synthetic-6c5ce7?style=flat-square"/>
+
+<br/><br/>
+
+<!-- ✅ ANIMATED SNAKE / CONTRIBUTION GRAPH VISUAL -->
+<img src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg" width="100%"/>
 
 </div>
 
@@ -156,13 +118,13 @@ pharma-trialguard/
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| 🤖 **ML Model** | XGBoost | Gradient-boosted dropout classifier |
-| 🔍 **Explainability** | SHAP TreeExplainer | Per-patient prediction decomposition |
-| 📐 **Feature Engineering** | scikit-learn | Train/test split, preprocessing |
-| 📊 **Data** | pandas + NumPy | Synthetic patient data generation |
-| 🖥️ **Dashboard** | Chart.js + PapaParse | Real-time interactive risk visualisation |
-| 💾 **Serialisation** | joblib + pickle | Model persistence |
-| 🎨 **UI Design** | Vanilla HTML/CSS/JS | Zero-dependency, deployable anywhere |
+|  **ML Model** | XGBoost | Gradient-boosted dropout classifier |
+|  **Explainability** | SHAP TreeExplainer | Per-patient prediction decomposition |
+|  **Feature Engineering** | scikit-learn | Train/test split, preprocessing |
+|  **Data** | pandas + NumPy | Synthetic patient data generation |
+|  **Dashboard** | Chart.js + PapaParse | Real-time interactive risk visualisation |
+|  **Serialisation** | joblib + pickle | Model persistence |
+|  **UI Design** | Vanilla HTML/CSS/JS | Zero-dependency, deployable anywhere |
 
 </div>
 
@@ -282,9 +244,9 @@ This multi-factor rule captures the three most clinically validated predictors o
 
 ## 🛣️ Roadmap
 
-- [ ] 🏥 Real EHR integration (FHIR / HL7 API connector)
-- [ ] 📡 REST API wrapper for trial management systems (Medidata / Veeva)
-- [ ] 🔄 Longitudinal risk tracking (patient risk over trial timeline)
+-  🏥 Real EHR integration (FHIR / HL7 API connector)
+- (-) 📡 REST API wrapper for trial management systems (Medidata / Veeva)
+- [-] 🔄 Longitudinal risk tracking (patient risk over trial timeline)
 - [ ] 📱 Mobile alert system for site coordinators
 - [ ] 🧬 Extend features: genetic markers, PRO scores, wearable signals
 - [ ] 🐳 Docker + cloud deployment (AWS/GCP ready)
@@ -312,20 +274,11 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 <div align="center">
 
-<!-- Footer wave -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 100" width="100%">
-  <defs>
-    <linearGradient id="footer-bg" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#0096c7"/>
-      <stop offset="100%" style="stop-color:#0d0d0d"/>
-    </linearGradient>
-  </defs>
-  <path d="M0,40 C200,10 400,70 600,30 C750,5 850,50 900,35 L900,100 L0,100 Z" fill="url(#footer-bg)"/>
-  <path d="M0,65 C150,45 350,80 550,55 C700,35 820,70 900,58 L900,100 L0,100 Z" fill="#0d0d0d" fill-opacity="0.7"/>
-</svg>
+<!-- ✅ ANIMATED FOOTER WAVE -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=120&section=footer" width="100%"/>
 
 <p>
-  <sub>Built with ❤️ for the future of clinical AI · <strong>PharmaTrialGuard</strong> · Keeping patients in trials, research on track</sub>
+  <sub>Built by Abhishek for the future of clinical AI · <strong>PharmaTrialGuard</strong> · Keeping patients in trials, research on track</sub>
 </p>
 
 <p>
