@@ -1,5 +1,50 @@
 <div align="center">
 
+<!-- Animated Banner -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d0d"/>
+      <stop offset="50%" style="stop-color:#003d57"/>
+      <stop offset="100%" style="stop-color:#0096c7"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00b4d8;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#0096c7;stop-opacity:0.2"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4a8;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0.1"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="900" height="200" fill="url(#bg)" rx="0"/>
+  <!-- Wave shapes -->
+  <path d="M0,120 C150,80 300,160 450,110 C600,60 750,140 900,100 L900,200 L0,200 Z" fill="url(#wave1)"/>
+  <path d="M0,150 C200,110 400,180 600,140 C750,110 850,160 900,145 L900,200 L0,200 Z" fill="url(#wave2)"/>
+  <!-- Grid lines for tech feel -->
+  <line x1="0" y1="40" x2="900" y2="40" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
+  <line x1="0" y1="80" x2="900" y2="80" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
+  <line x1="0" y1="120" x2="900" y2="120" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.2"/>
+  <line x1="150" y1="0" x2="150" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
+  <line x1="450" y1="0" x2="450" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
+  <line x1="750" y1="0" x2="750" y2="200" stroke="#00b4d8" stroke-width="0.3" stroke-opacity="0.15"/>
+  <!-- Accent dots -->
+  <circle cx="60" cy="40" r="3" fill="#00b4d8" fill-opacity="0.6"/>
+  <circle cx="840" cy="160" r="3" fill="#00d4a8" fill-opacity="0.6"/>
+  <circle cx="450" cy="25" r="2" fill="#00b4d8" fill-opacity="0.4"/>
+  <!-- Title -->
+  <text x="450" y="85" font-family="'Courier New', monospace" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="4">PharmaTrialGuard</text>
+  <!-- Cyan underline accent -->
+  <rect x="280" y="92" width="340" height="2" fill="#00b4d8" rx="1"/>
+  <!-- Subtitle -->
+  <text x="450" y="125" font-family="'Courier New', monospace" font-size="13" fill="#00b4d8" text-anchor="middle" letter-spacing="2">AI-POWERED CLINICAL TRIAL DROPOUT PREDICTION &amp; EXPLAINABILITY</text>
+  <!-- Corner brackets for techy feel -->
+  <path d="M20,15 L20,5 L30,5" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
+  <path d="M870,15 L870,5 L860,5" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
+  <path d="M20,185 L20,195 L30,195" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
+  <path d="M870,185 L870,195 L860,195" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-opacity="0.7"/>
+</svg>
 
 <!-- Badges Row 1 -->
 <p>
@@ -54,16 +99,24 @@ Static spreadsheets                    →     Live interactive clinical dashboa
 <div align="center">
 
 > ⚡ **Interactive dashboard running at `dashboard/index.html`**
-<div align="center">
-  <img src="./assets/dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
-  <br/><br/>
-  <img src="./assets/risk-table.png" width="49%" alt="Risk Table"/>
-  <img src="./assets/shap-beeswarm.png" width="49%" alt="SHAP Beeswarm"/>
-  <br/><br/>
-  <img src="./assets/feature-importance.png" width="60%" alt="Feature Importance"/>
-</div>
 
-*Patient risk table · SHAP beeswarm · Feature importance · Live scoring engine*
+**Dashboard Overview**
+<img src="./assets/dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
+
+<br/>
+
+**Patient Risk Table**
+<img src="./assets/risk-table.png" width="100%" alt="Patient Risk Table"/>
+
+<br/>
+
+**SHAP Beeswarm Plot**
+<img src="./assets/shap-beeswarm.png" width="100%" alt="SHAP Beeswarm Plot"/>
+
+<br/>
+
+**Feature Importance Chart**
+<img src="./assets/feature-importance.png" width="100%" alt="Feature Importance Chart"/>
 
 </div>
 
@@ -260,7 +313,16 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 <div align="center">
 
 <!-- Footer wave -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0096c7,100:0d0d0d&height=120&section=footer" width="100%"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 100" width="100%">
+  <defs>
+    <linearGradient id="footer-bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0096c7"/>
+      <stop offset="100%" style="stop-color:#0d0d0d"/>
+    </linearGradient>
+  </defs>
+  <path d="M0,40 C200,10 400,70 600,30 C750,5 850,50 900,35 L900,100 L0,100 Z" fill="url(#footer-bg)"/>
+  <path d="M0,65 C150,45 350,80 550,55 C700,35 820,70 900,58 L900,100 L0,100 Z" fill="#0d0d0d" fill-opacity="0.7"/>
+</svg>
 
 <p>
   <sub>Built with ❤️ for the future of clinical AI · <strong>PharmaTrialGuard</strong> · Keeping patients in trials, research on track</sub>
