@@ -56,9 +56,14 @@ Static spreadsheets                    →     Live interactive clinical dashboa
 <div align="center">
 
 > ⚡ **Interactive dashboard running at `dashboard/index.html`**
-
-<!-- Replace with your actual screenshot once uploaded -->
-![TrialGuard Dashboard](./dashboard/index.html)
+<div align="center">
+  <img src="./assets/dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
+  <br/><br/>
+  <img src="./assets/risk-table.png" width="49%" alt="Risk Table"/>
+  <img src="./assets/shap-beeswarm.png" width="49%" alt="SHAP Beeswarm"/>
+  <br/><br/>
+  <img src="./assets/feature-importance.png" width="60%" alt="Feature Importance"/>
+</div>
 
 *Patient risk table · SHAP beeswarm · Feature importance · Live scoring engine*
 
