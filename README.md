@@ -1,7 +1,5 @@
 <div align="center">
 
-<!-- ✅ ANIMATED BANNER — capsule-render (live waves + twinkling) -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=220&section=header&text=PharmaTrialGuard&fontSize=52&fontColor=FFFFFF&fontAlignY=40&desc=AI-Powered%20Clinical%20Trial%20Dropout%20Prediction%20%26%20Explainability&descAlignY=62&descSize=15&descColor=00b4d8&animation=twinkling" width="100%"/>
 
 <br/>
 
@@ -63,7 +61,7 @@ Static spreadsheets                    →     Live interactive clinical dashboa
 > ⚡ **Interactive dashboard running at `dashboard/index.html`**
 
 **Dashboard Overview**
-<img src="./assets/dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
+<img src="./assets/Dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
 
 <br/>
 
@@ -244,13 +242,13 @@ This multi-factor rule captures the three most clinically validated predictors o
 
 ## 🛣️ Roadmap
 
--  🏥 Real EHR integration (FHIR / HL7 API connector)
-- (-) 📡 REST API wrapper for trial management systems (Medidata / Veeva)
-- [-] 🔄 Longitudinal risk tracking (patient risk over trial timeline)
-- [ ] 📱 Mobile alert system for site coordinators
-- [ ] 🧬 Extend features: genetic markers, PRO scores, wearable signals
-- [ ] 🐳 Docker + cloud deployment (AWS/GCP ready)
-- [ ] 🔒 HIPAA-compliant data handling layer
+-  Real EHR integration (FHIR / HL7 API connector)
+-  REST API wrapper for trial management systems (Medidata / Veeva)
+-  Longitudinal risk tracking (patient risk over trial timeline)
+-  Mobile alert system for site coordinators
+-  Extend features: genetic markers, PRO scores, wearable signals
+-  Docker + cloud deployment (AWS/GCP ready)
+-  HIPAA-compliant data handling layer
 
 ---
 
