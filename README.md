@@ -42,7 +42,7 @@ Clinical trial failures cost the pharmaceutical industry **$600B+ annually**, wi
 ## 🎯 Problem → Solution
 
 ```
-❌ BEFORE TrialGuard                         ✅ AFTER TrialGuard
+ BEFORE TrialGuard                            AFTER TrialGuard
 ─────────────────────────────────────        ──────────────────────────────────────
 Dropout detected AFTER it happens      →     Risk scored BEFORE dropout occurs
 No insight into WHY patients drop out  →     SHAP explains every prediction
@@ -60,7 +60,7 @@ Static spreadsheets                    →     Live interactive clinical dashboa
 > ⚡ **Interactive dashboard running at `dashboard/index.html`**
 
 **Dashboard Overview**
-<img src="./assets/dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
+<img src="./assets/Dashboard-overview.png" width="100%" alt="Dashboard Overview"/>
 
 <br/>
 
@@ -86,15 +86,15 @@ Static spreadsheets                    →     Live interactive clinical dashboa
 ```
 pharma-trialguard/
 │
-├── 📊 clinical_data.csv          ← 400 synthetic patients (age, distance, adherence, AEs)
+├── clinical_data.csv          ← 400 synthetic patients (age, distance, adherence, AEs)
 │
-├── 🐍 generate_data.py           ← Synthetic data generator with realistic dropout logic
+├── generate_data.py           ← Synthetic data generator with realistic dropout logic
 │
 ├── model/
-│   ├── 🧠 train_model.py         ← XGBoost classifier training + model serialisation
-│   ├── 🔮 predict.py             ← Batch dropout probability scoring
-│   ├── 🔍 shap_export.py         ← SHAP TreeExplainer → beeswarm + bar charts
-│   └── 📦 xgboost_model.pkl      ← Serialised trained model
+│   ├── train_model.py         ← XGBoost classifier training + model serialisation
+│   ├── predict.py             ← Batch dropout probability scoring
+│   ├── shap_export.py         ← SHAP TreeExplainer → beeswarm + bar charts
+│   └── xgboost_model.pkl      ← Serialised trained model
 │
 ├── data/
 │   ├── feature_importance.csv    ← Top feature weights
@@ -102,7 +102,7 @@ pharma-trialguard/
 │   └── shap_values.csv           ← Per-patient SHAP decomposition
 │
 └── dashboard/
-    ├── 🖥️  index.html             ← Full interactive clinical dashboard (Chart.js)
+    ├── index.html             ← Full interactive clinical dashboard (Chart.js)
     ├── shap_beeswarm.png         ← SHAP summary beeswarm plot
     └── shap_importance.png       ← Global feature importance bar chart
 ```
@@ -115,13 +115,13 @@ pharma-trialguard/
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| 🤖 **ML Model** | XGBoost | Gradient-boosted dropout classifier |
-| 🔍 **Explainability** | SHAP TreeExplainer | Per-patient prediction decomposition |
-| 📐 **Feature Engineering** | scikit-learn | Train/test split, preprocessing |
-| 📊 **Data** | pandas + NumPy | Synthetic patient data generation |
-| 🖥️ **Dashboard** | Chart.js + PapaParse | Real-time interactive risk visualisation |
-| 💾 **Serialisation** | joblib + pickle | Model persistence |
-| 🎨 **UI Design** | Vanilla HTML/CSS/JS | Zero-dependency, deployable anywhere |
+|**ML Model** | XGBoost | Gradient-boosted dropout classifier |
+|**Explainability** | SHAP TreeExplainer | Per-patient prediction decomposition |
+|**Feature Engineering** | scikit-learn | Train/test split, preprocessing |
+|**Data** | pandas + NumPy | Synthetic patient data generation |
+|**Dashboard** | Chart.js + PapaParse | Real-time interactive risk visualisation |
+|**Serialisation** | joblib + pickle | Model persistence |
+|**UI Design** | Vanilla HTML/CSS/JS | Zero-dependency, deployable anywhere |
 
 </div>
 
@@ -241,13 +241,13 @@ This multi-factor rule captures the three most clinically validated predictors o
 
 ## 🛣️ Roadmap
 
-- [ ] 🏥 Real EHR integration (FHIR / HL7 API connector)
-- [ ] 📡 REST API wrapper for trial management systems (Medidata / Veeva)
-- [ ] 🔄 Longitudinal risk tracking (patient risk over trial timeline)
-- [ ] 📱 Mobile alert system for site coordinators
-- [ ] 🧬 Extend features: genetic markers, PRO scores, wearable signals
-- [ ] 🐳 Docker + cloud deployment (AWS/GCP ready)
-- [ ] 🔒 HIPAA-compliant data handling layer
+- Real EHR integration (FHIR / HL7 API connector)
+- REST API wrapper for trial management systems (Medidata / Veeva)
+- Longitudinal risk tracking (patient risk over trial timeline)
+- Mobile alert system for site coordinators
+- Extend features: genetic markers, PRO scores, wearable signals
+- Docker + cloud deployment (AWS/GCP ready)
+- HIPAA-compliant data handling layer
 
 ---
 
@@ -275,7 +275,7 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 <img src="./assets/footer.svg" width="100%" alt="footer"/>
 
 <p>
-  <sub>Built with ❤️ for the future of clinical AI · <strong>PharmaTrialGuard</strong> · Keeping patients in trials, research on track</sub>
+  <sub>Built by Abhishek for the future of clinical AI · <strong>PharmaTrialGuard</strong> · Keeping patients in trials, research on track</sub>
 </p>
 
 <p>
