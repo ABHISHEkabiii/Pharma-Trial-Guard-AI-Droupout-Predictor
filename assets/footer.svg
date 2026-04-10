@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 100" width="900" height="100">
+  <defs>
+    <linearGradient id="footerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#050d1a"/>
+      <stop offset="40%" style="stop-color:#003d57"/>
+      <stop offset="70%" style="stop-color:#00b4d8"/>
+      <stop offset="100%" style="stop-color:#050d1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="100" fill="#050d1a"/>
+  <path d="M0,35 C100,10 200,60 350,30 C500,0 650,55 800,25 C850,15 880,30 900,22 L900,100 L0,100 Z" fill="url(#footerGrad)" opacity="0.7"/>
+  <path d="M0,55 C150,30 300,70 500,45 C680,22 800,60 900,42 L900,100 L0,100 Z" fill="#00b4d8" opacity="0.15"/>
+  <path d="M0,72 C200,55 400,80 600,62 C750,48 860,72 900,65 L900,100 L0,100 Z" fill="#050d1a" opacity="0.8"/>
+  <!-- Scan line -->
+  <rect x="0" y="0" width="900" height="1.5" fill="#00b4d8" opacity="0.4"/>
+</svg>
