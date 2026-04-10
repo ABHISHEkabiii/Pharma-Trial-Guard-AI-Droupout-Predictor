@@ -1,7 +1,5 @@
 <div align="center">
 
-<!-- Animated Banner -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,50:00b4d8,100:0096c7&height=200&section=header&text=PharmaTrialGuard&fontSize=55&fontColor=ffffff&fontAlignY=38&desc=AI-Powered%20Clinical%20Trial%20Dropout%20Prediction%20%26%20Explainability&descAlignY=58&descSize=16&animation=twinkling" width="100%"/>
 
 <!-- Badges Row 1 -->
 <p>
